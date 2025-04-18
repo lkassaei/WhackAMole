@@ -16,13 +16,18 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
     private final int numHoleCols = 4;
     private final int margin = 200;
     private WhackAMoleViewer window;
-    private static final int SLEEP_TIME = 110;
     private int points;
 
     private int state;
     public static final int INSTRUCTION_STATE = 0;
     public static final int MAIN_STATE = 1;
     public static final int GAME_OVER_STATE = 2;
+
+    private Timer clock;
+    private final int DELAY_IN_MILISECONDS = 1000;
+    private static final int SLEEP_TIME = 110;
+
+    private int counter;
 
 
 
@@ -42,6 +47,11 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         window.addKeyListener(this); // Required for KeyListener
         this.window.addMouseListener(this);
         this.window.addMouseMotionListener(this);
+
+        counter = 200;
+
+        clock = new Timer(DELAY_IN_MILISECONDS, this);
+        clock.start();
     }
 
     public Mole getMole() {
@@ -60,12 +70,22 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         return state;
     }
 
+    public int getCounter() {
+        return counter;
+    }
+
+
+
     public int getPoints() {
         return points;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        counter--;
+        if (counter == 0) {
+            state = GAME_OVER_STATE;
+        }
         window.repaint();
     }
 
@@ -124,6 +144,15 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
     public void mouseMoved(MouseEvent e) {
         hammer.setX(e.getX());
         hammer.getY(e.getY());
+        if (hammer.hasCollided(mole) && !mole.isHasBeenCollided()) {
+            mole.setHasBeenCollided(true);
+            mole.move();
+            points++;
+        }
+        else {
+            mole.setHasBeenCollided(false);
+        }
+
         this.window.repaint();
     }
 }

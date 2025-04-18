@@ -68,6 +68,15 @@ public class WhackAMoleViewer extends JFrame {
         }
         game.getMole().draw(g);
         game.getHammer().draw(g);
+
+        g.setColor(Color.ORANGE);
+        g.fillRect(50, 50, 300, 200);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 36));
+        g.drawString(Integer.toString(game.getCounter()/10), 250, 100);
+        g.drawString("Timer: ", 100, 100);
+        g.drawString("Points: ", 100, 200);
+        g.drawString(Integer.toString(game.getPoints()), 250, 200);
     }
 
     public void paintMain(Graphics g) {
@@ -76,5 +85,6 @@ public class WhackAMoleViewer extends JFrame {
 
     public void paintGameOver(Graphics g) {
         g.drawImage(this.gameOver, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+
     }
 }

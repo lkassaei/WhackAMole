@@ -15,13 +15,41 @@ public class Mole {
     private Hole currentHole;
     private ArrayList<Hole> holes;
 
+    private boolean hasBeenCollided;
+
     public Mole(WhackAMoleViewer window, ArrayList<Hole> holes) {
         this.window = window;
         this.windowWidth = window.getWidth();
         this.windowHeight = window.getHeight();
         this.holes = holes;
+        hasBeenCollided = false;
         this.moleImage = new ImageIcon("Resources/moleTransparent.png").getImage();
         this.move();
+
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
+    }
+
+    public boolean isHasBeenCollided() {
+        return hasBeenCollided;
+    }
+
+    public void setHasBeenCollided(boolean hasBeenCollided) {
+        this.hasBeenCollided = hasBeenCollided;
     }
 
     public void move() {

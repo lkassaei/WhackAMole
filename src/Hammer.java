@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 public class Hammer {
     private int x;
@@ -24,6 +22,23 @@ public class Hammer {
 
     public void getY(int newY) {
         y = newY;
+    }
+
+    public boolean hasCollided(Mole mole) {
+        int hammerRightX = x + imageWidth;
+        int hammerBottomRY = y + imageHeight;
+
+        int moleRightX = mole.getX() + mole.getImageWidth();
+        int moleBottomRY = mole.getY() + mole.getImageHeight();
+
+        boolean xOverlap = x < moleRightX && hammerRightX > mole.getX();
+        boolean yOverlap = y < moleBottomRY && hammerBottomRY > mole.getY();
+
+        if (xOverlap && yOverlap) {
+
+            return true;
+        }
+        return false;
     }
 
     public void draw(Graphics g) {
