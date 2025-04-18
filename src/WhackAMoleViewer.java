@@ -23,7 +23,7 @@ public class WhackAMoleViewer extends JFrame {
     public void setupWindow() {
         // Make sure window exits when you close it, has the title "Card Game", has a set size, and can be seen
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle("Card Game");
+        this.setTitle("Whack-A-Mole");
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         // Calls paint method
         this.setVisible(true);
@@ -67,6 +67,7 @@ public class WhackAMoleViewer extends JFrame {
             h.draw(g);
         }
         game.getMole().draw(g);
+        game.getHammer().draw(g);
     }
 
     public void paintMain(Graphics g) {

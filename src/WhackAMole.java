@@ -38,6 +38,7 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         holes.add(new Hole(window, 750, 570));
 
         this.mole = new Mole(window, holes);
+        this.hammer = new Hammer(window);
         window.addKeyListener(this); // Required for KeyListener
         this.window.addMouseListener(this);
         this.window.addMouseMotionListener(this);
@@ -45,6 +46,10 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
 
     public Mole getMole() {
         return mole;
+    }
+
+    public Hammer getHammer() {
+        return hammer;
     }
 
     public ArrayList<Hole> getHoles() {
@@ -117,8 +122,8 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        window.repaint();
+        hammer.setX(e.getX());
+        hammer.getY(e.getY());
+        this.window.repaint();
     }
-
-
 }

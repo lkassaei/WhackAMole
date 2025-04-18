@@ -8,8 +8,8 @@ public class Mole {
     private int windowWidth;
     private int windowHeight;
     private Image moleImage;
-    private final int imageWidth = 150;
-    private final int imageHeight = 100;
+    private final int imageWidth = 200;
+    private final int imageHeight = 150;
     private int x;
     private int y;
     private Hole currentHole;
@@ -26,8 +26,8 @@ public class Mole {
 
     public void move() {
         this.currentHole = holes.get((int)(Math.random() * holes.size()));
-        this.x = currentHole.getX() + 50;
-        this.y = currentHole.getY() + 50;
+        this.x = currentHole.getX() + 20;
+        this.y = currentHole.getY() + 5;
     }
 
     public void draw(Graphics g) {
