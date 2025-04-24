@@ -67,7 +67,6 @@ public class WhackAMoleViewer extends JFrame {
             h.draw(g);
         }
         game.getMole().draw(g);
-        game.getEvilMole().draw(g);
         game.getHammer().draw(g);
 
         // Draw information panel

@@ -6,10 +6,11 @@ public class Hammer {
     private int y;
     private Image leftHammerImage;
     private Image rightHammerImage;
-    private final int imageWidth = 200;
-    private final int imageHeight = 200;
-    private final int margin = 150;
+    private int imageWidth;
+    private final int imageHeight;
     private WhackAMoleViewer window;
+
+    private int mouseAdjust;
 
     public Hammer(WhackAMoleViewer window) {
         this.window = window;
@@ -17,29 +18,32 @@ public class Hammer {
         this.y = 0;
         this.leftHammerImage = new ImageIcon("Resources/hammer.png").getImage();
         this.rightHammerImage = new ImageIcon("Resources/hammerRightFacing.png").getImage();
+        imageWidth = leftHammerImage.getWidth(window);
+        imageHeight = leftHammerImage.getHeight(window);
+        mouseAdjust = 100;
     }
 
     public void setX(int newX) {
         x = newX;
     }
 
-    public void getY(int newY) {
+    public void setY(int newY) {
         y = newY;
     }
 
     public boolean hasCollided(Mole mole) {
         // Account for the centering offset for the mouse
-        int hammerLeftX = x - 100;
-        int hammerTopY = y - 100;
+        int hammerLeftX = x - mouseAdjust;
+        int hammerTopY = y - mouseAdjust;
 
-        int hammerRightX = x + imageWidth - margin;
-        int hammerBottomRY = y + imageHeight - margin;
+        int hammerRightX = x - mouseAdjust + imageWidth;
+        int hammerBottomY = y - mouseAdjust + imageHeight;
 
-        int moleRightX = mole.getX() + mole.getImageWidth() - mole.getMargin();
-        int moleBottomRY = mole.getY() + mole.getImageHeight() - mole.getMargin();
+        int moleRightX = mole.getX() - mole.getAdjust() + mole.getImageWidth();
+        int moleBottomY = mole.getY() - mole.getAdjust() + mole.getImageHeight();
 
         boolean xOverlap = hammerLeftX < moleRightX && hammerRightX > mole.getX();
-        boolean yOverlap = hammerTopY < moleBottomRY && hammerBottomRY > mole.getY();
+        boolean yOverlap = hammerTopY < moleBottomY && hammerBottomY > mole.getY();
 
         if (xOverlap && yOverlap) {
             return true;
@@ -49,10 +53,10 @@ public class Hammer {
 
     public void draw(Graphics g) {
         if (x > window.getWidth() / 2) {
-            g.drawImage(rightHammerImage, x - 100, y - 100, imageWidth, imageHeight, null);
+            g.drawImage(rightHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, null);
         }
         else {
-            g.drawImage(leftHammerImage, x - 100, y - 100, imageWidth, imageHeight, null);;
+            g.drawImage(leftHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, null);;
         }
 
     }

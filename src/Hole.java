@@ -9,7 +9,7 @@ public class Hole {
     private int y;
     private Image holeImage;
     private final int imageWidth = 250;
-    private final int imageHeight = 200;
+    private final int imageHeight = 150;
 
     public Hole(WhackAMoleViewer window, int x, int y) {
         this.window = window;

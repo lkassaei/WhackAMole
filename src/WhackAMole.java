@@ -8,14 +8,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-public class WhackAMole implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
+public class WhackAMole implements ActionListener, MouseMotionListener {
     private Mole mole;
-    private Mole evilMole;
     private Hammer hammer;
     private ArrayList<Hole> holes;
-    private final int numHoleRows = 2;
-    private final int numHoleCols = 4;
-    private final int margin = 200;
+
+
     private WhackAMoleViewer window;
     private int points;
 
@@ -30,40 +28,24 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
 
     private int counter;
 
-
-
     public WhackAMole() {
         window = new WhackAMoleViewer(this);
+
         this.state = INSTRUCTION_STATE;
 
-        holes = new ArrayList<>();
+        this.holes = new ArrayList<Hole>();
+        fillHoles();
 
-        holes.add(new Hole(window, 50, 500));
-        holes.add(new Hole(window, 190, 570));
-        holes.add(new Hole(window, 330, 490));
-        holes.add(new Hole(window, 470, 580));
-        holes.add(new Hole(window, 610, 500));
-        holes.add(new Hole(window, 750, 570));
-
-        this.mole = new Mole(window, holes); // Make good mole
-        this.evilMole = new Mole(window, holes); // Make evil mole
+        this.mole = new Mole(window, holes);
         this.hammer = new Hammer(window);
-        window.addKeyListener(this); // Required for KeyListener
-        this.window.addMouseListener(this);
+
         this.window.addMouseMotionListener(this);
 
         counter = 200;
-
-        clock = new Timer(DELAY_IN_MILISECONDS, this);
-        clock.start();
     }
 
     public Mole getMole() {
         return mole;
-    }
-
-    public Mole getEvilMole() {
-        return evilMole;
     }
 
     public Hammer getHammer() {
@@ -86,56 +68,31 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         return points;
     }
 
+    public void fillHoles() {
+        // Row 1 (normal)
+        int spacingY = 75;
+        int spacingX = 300;
+        int startX = 75;
+        int startY = 500;
+
+        holes.add(new Hole(window, startX, startY));
+        holes.add(new Hole(window,startX + spacingX, startY));
+        holes.add(new Hole(window,startX + 2 * spacingX, startY));
+
+        holes.add(new Hole(window,startX + spacingX / 2, startY + spacingY));
+        holes.add(new Hole(window,startX + spacingX / 2 + spacingX, startY + spacingY));
+
+        holes.add(new Hole(window,startX, startY + 2 * spacingY));
+        holes.add(new Hole(window,startX + spacingX, startY + 2 * spacingY));
+        holes.add(new Hole(window,startX + 2 * spacingX, startY + 2 * spacingY));
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         counter--;
-        // Have mole randomly move every 5 seconds
-        if (counter % 20 == 0) {
-            evilMole.move();
-        }
         if (counter == 0) {
             state = GAME_OVER_STATE;
         }
-        window.repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        window.repaint();
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
         window.repaint();
     }
 
@@ -154,20 +111,11 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
     public void mouseMoved(MouseEvent e) {
         if (this.state != GAME_OVER_STATE) {
             hammer.setX(e.getX());
-            hammer.getY(e.getY());
-
+            hammer.setY(e.getY());
             if (hammer.hasCollided(mole)) {
-                mole.setHasBeenCollided(true);
                 mole.move();
                 points++;
             }
-
-            if (hammer.hasCollided(evilMole)) {
-                evilMole.setHasBeenCollided(true);
-                evilMole.move();
-                points--;
-            }
-
             this.window.repaint();
         }
     }
