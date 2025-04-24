@@ -16,7 +16,7 @@ public class WhackAMoleViewer extends JFrame {
         // Find and set image
         this.loadingGame = new ImageIcon("Resources/back.png").getImage();
         this.background = new ImageIcon("Resources/back.png").getImage();
-        this.gameOver = new ImageIcon("Resources/back.png").getImage();
+        this.gameOver = new ImageIcon("Resources/over.png").getImage();
         setupWindow();
     }
 
@@ -67,16 +67,19 @@ public class WhackAMoleViewer extends JFrame {
             h.draw(g);
         }
         game.getMole().draw(g);
+        game.getEvilMole().draw(g);
         game.getHammer().draw(g);
 
-        g.setColor(Color.ORANGE);
-        g.fillRect(50, 50, 300, 200);
+        // Draw information panel
+        g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
+        g.fillRect(75, 60, 250, 100); // Information panel background
+
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 36));
-        g.drawString(Integer.toString(game.getCounter()/10), 250, 100);
-        g.drawString("Timer: ", 100, 100);
-        g.drawString("Points: ", 100, 200);
-        g.drawString(Integer.toString(game.getPoints()), 250, 200);
+
+        // Draw timer and points text
+        g.drawString("Timer: " + Integer.toString(game.getCounter() / 10), 100, 100);
+        g.drawString("Points: " + Integer.toString(game.getPoints()), 100, 150);
     }
 
     public void paintMain(Graphics g) {
@@ -84,7 +87,16 @@ public class WhackAMoleViewer extends JFrame {
     }
 
     public void paintGameOver(Graphics g) {
-        g.drawImage(this.gameOver, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+        g.drawImage(this.gameOver, 0, -150, WINDOW_WIDTH, WINDOW_HEIGHT + 300, this);
 
+        // Draw information panel
+        g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
+        g.fillRect(75, 100, 200, 50); // Information panel background
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 36));
+
+        // Draw points text
+        g.drawString("Points: " + Integer.toString(game.getPoints()), 100, 140);
     }
 }

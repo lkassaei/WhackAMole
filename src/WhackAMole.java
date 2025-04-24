@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class WhackAMole implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
     private Mole mole;
+    private Mole evilMole;
     private Hammer hammer;
     private ArrayList<Hole> holes;
     private final int numHoleRows = 2;
@@ -34,7 +35,9 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
     public WhackAMole() {
         window = new WhackAMoleViewer(this);
         this.state = INSTRUCTION_STATE;
-        holes = new ArrayList<Hole>();
+
+        holes = new ArrayList<>();
+
         holes.add(new Hole(window, 50, 500));
         holes.add(new Hole(window, 190, 570));
         holes.add(new Hole(window, 330, 490));
@@ -42,7 +45,8 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         holes.add(new Hole(window, 610, 500));
         holes.add(new Hole(window, 750, 570));
 
-        this.mole = new Mole(window, holes);
+        this.mole = new Mole(window, holes); // Make good mole
+        this.evilMole = new Mole(window, holes); // Make evil mole
         this.hammer = new Hammer(window);
         window.addKeyListener(this); // Required for KeyListener
         this.window.addMouseListener(this);
@@ -56,6 +60,10 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
 
     public Mole getMole() {
         return mole;
+    }
+
+    public Mole getEvilMole() {
+        return evilMole;
     }
 
     public Hammer getHammer() {
@@ -74,8 +82,6 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
         return counter;
     }
 
-
-
     public int getPoints() {
         return points;
     }
@@ -83,6 +89,10 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
     @Override
     public void actionPerformed(ActionEvent e) {
         counter--;
+        // Have mole randomly move every 5 seconds
+        if (counter % 20 == 0) {
+            evilMole.move();
+        }
         if (counter == 0) {
             state = GAME_OVER_STATE;
         }
@@ -142,17 +152,23 @@ public class WhackAMole implements ActionListener, MouseListener, MouseMotionLis
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        hammer.setX(e.getX());
-        hammer.getY(e.getY());
-        if (hammer.hasCollided(mole) && !mole.isHasBeenCollided()) {
-            mole.setHasBeenCollided(true);
-            mole.move();
-            points++;
-        }
-        else {
-            mole.setHasBeenCollided(false);
-        }
+        if (this.state != GAME_OVER_STATE) {
+            hammer.setX(e.getX());
+            hammer.getY(e.getY());
 
-        this.window.repaint();
+            if (hammer.hasCollided(mole)) {
+                mole.setHasBeenCollided(true);
+                mole.move();
+                points++;
+            }
+
+            if (hammer.hasCollided(evilMole)) {
+                evilMole.setHasBeenCollided(true);
+                evilMole.move();
+                points--;
+            }
+
+            this.window.repaint();
+        }
     }
 }
