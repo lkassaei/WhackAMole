@@ -12,7 +12,7 @@ public class Mole {
     private int imageWidth;
     private int imageHeight;
 
-    private int adjust;
+    private final int adjust = 20;
 
     private int x;
     private int y;
@@ -27,8 +27,6 @@ public class Mole {
         this.moleImage = new ImageIcon("Resources/moleTransparent.png").getImage();
         imageWidth = moleImage.getWidth(window);
         imageHeight = moleImage.getHeight(window);
-        adjust = 20;
-
         this.move();
     }
 
@@ -60,6 +58,6 @@ public class Mole {
     }
 
     public void draw(Graphics g) {
-        g.drawImage(moleImage, x - 20, y - 20, imageWidth, imageHeight, window);
+        g.drawImage(moleImage, x - adjust, y - adjust, imageWidth, imageHeight, window);
     }
 }

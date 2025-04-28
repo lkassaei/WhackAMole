@@ -13,11 +13,14 @@ public class WhackAMoleViewer extends JFrame {
 
     public WhackAMoleViewer(WhackAMole game) {
         this.game = game;
-        // Find and set image
+        setImages();
+        setupWindow();
+    }
+
+    public void setImages() {
         this.loadingGame = new ImageIcon("Resources/back.png").getImage();
         this.background = new ImageIcon("Resources/back.png").getImage();
         this.gameOver = new ImageIcon("Resources/over.png").getImage();
-        setupWindow();
     }
 
     public void setupWindow() {
@@ -50,6 +53,10 @@ public class WhackAMoleViewer extends JFrame {
         // Find what state the game is in
         int state = game.getState();
         // Based on the state, draw the right things
+        paintCorrectState(state, g);
+    }
+
+    public void paintCorrectState(int state, Graphics g) {
         if (state == WhackAMole.INSTRUCTION_STATE) {
             paintInstructions(g);
         }
@@ -90,12 +97,12 @@ public class WhackAMoleViewer extends JFrame {
 
         // Draw information panel
         g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
-        g.fillRect(75, 100, 200, 50); // Information panel background
+        g.fillRect(10, 60, 250, 50); // Information panel background
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 36));
 
         // Draw points text
-        g.drawString("Points: " + Integer.toString(game.getPoints()), 100, 140);
+        g.drawString("Points: " + game.getPoints(), 20, 100);
     }
 }

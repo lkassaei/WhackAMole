@@ -1,10 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
@@ -12,21 +8,17 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
     private Mole mole;
     private Hammer hammer;
     private ArrayList<Hole> holes;
-
-
     private WhackAMoleViewer window;
+
     private int points;
+    private int counter;
 
     private int state;
     public static final int INSTRUCTION_STATE = 0;
     public static final int MAIN_STATE = 1;
     public static final int GAME_OVER_STATE = 2;
 
-    private Timer clock;
-    private final int DELAY_IN_MILISECONDS = 1000;
     private static final int SLEEP_TIME = 110;
-
-    private int counter;
 
     public WhackAMole() {
         window = new WhackAMoleViewer(this);
@@ -41,7 +33,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
 
         this.window.addMouseMotionListener(this);
 
-        counter = 200;
+        counter = 100;
     }
 
     public Mole getMole() {

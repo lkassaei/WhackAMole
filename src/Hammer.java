@@ -10,7 +10,7 @@ public class Hammer {
     private final int imageHeight;
     private WhackAMoleViewer window;
 
-    private int mouseAdjust;
+    private final int mouseAdjust = 100;
 
     public Hammer(WhackAMoleViewer window) {
         this.window = window;
@@ -20,7 +20,6 @@ public class Hammer {
         this.rightHammerImage = new ImageIcon("Resources/hammerRightFacing.png").getImage();
         imageWidth = leftHammerImage.getWidth(window);
         imageHeight = leftHammerImage.getHeight(window);
-        mouseAdjust = 100;
     }
 
     public void setX(int newX) {
@@ -58,6 +57,5 @@ public class Hammer {
         else {
             g.drawImage(leftHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, null);;
         }
-
     }
 }
