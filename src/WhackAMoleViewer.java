@@ -10,6 +10,8 @@ public class WhackAMoleViewer extends JFrame {
     private Image background;
     private Image gameOver;
 
+    private final int PANEL_MARGIN = 20;
+
 
     public WhackAMoleViewer(WhackAMole game) {
         this.game = game;
@@ -68,41 +70,45 @@ public class WhackAMoleViewer extends JFrame {
         }
     }
 
+    public void drawPanel(Graphics g, Boolean drawTimer, Boolean hasStarted, int x, int y) {
+        // Draw information panel
+        g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
+        g.fillRect(x, y, x * 5, y * 2); // Information panel background
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 36));
+
+        if (drawTimer && hasStarted) {
+            g.drawString("Timer: " + game.getCounter() / 10, x + PANEL_MARGIN, y + (2 * PANEL_MARGIN));
+            g.drawString("Points: " + game.getPoints(), x + PANEL_MARGIN, y + (4 * PANEL_MARGIN));
+        }
+        else if (drawTimer) {
+            g.drawString("Start In: " + ((game.getCounter() / 10) - 15), x + PANEL_MARGIN, y + (3 * PANEL_MARGIN));
+        }
+        else {
+            g.drawString("Points: " + game.getPoints(), x + PANEL_MARGIN, y + (3 * PANEL_MARGIN));
+        }
+    }
+
     public void paintInstructions(Graphics g) {
         g.drawImage(this.loadingGame, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+        drawPanel(g, true, false, 40, 50);
+    }
+
+    public void paintMain(Graphics g) {
+        g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
         for (Hole h : game.getHoles()) {
             h.draw(g);
         }
         game.getMole().draw(g);
         game.getHammer().draw(g);
 
-        // Draw information panel
-        g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
-        g.fillRect(75, 60, 250, 100); // Information panel background
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("SansSerif", Font.BOLD, 36));
-
-        // Draw timer and points text
-        g.drawString("Timer: " + Integer.toString(game.getCounter() / 10), 100, 100);
-        g.drawString("Points: " + Integer.toString(game.getPoints()), 100, 150);
-    }
-
-    public void paintMain(Graphics g) {
-        g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+        drawPanel(g, true, true, 40, 50);
     }
 
     public void paintGameOver(Graphics g) {
         g.drawImage(this.gameOver, 0, -150, WINDOW_WIDTH, WINDOW_HEIGHT + 300, this);
 
-        // Draw information panel
-        g.setColor(new Color(255, 165, 0, 180)); // Orange with transparency
-        g.fillRect(10, 60, 250, 50); // Information panel background
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("SansSerif", Font.BOLD, 36));
-
-        // Draw points text
-        g.drawString("Points: " + game.getPoints(), 20, 100);
+        drawPanel(g, false, true, 40, 50);
     }
 }

@@ -27,13 +27,17 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
 
         this.holes = new ArrayList<Hole>();
         fillHoles();
-
-        this.mole = new Mole(window, holes);
         this.hammer = new Hammer(window);
+        this.mole = new Mole(window, holes);
 
         this.window.addMouseMotionListener(this);
 
-        counter = 100;
+        counter = 200;
+    }
+
+    public void start(WhackAMole game) {
+        Timer clock = new Timer(SLEEP_TIME, game);
+        clock.start();
     }
 
     public Mole getMole() {
@@ -82,16 +86,16 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         counter--;
-        if (counter == 0) {
+        if (counter > 150) {
+            this.state = INSTRUCTION_STATE;
+        }
+        else if (counter > 0) {
+            this.state = MAIN_STATE;
+        }
+        else if (counter == 0){
             state = GAME_OVER_STATE;
         }
         window.repaint();
-    }
-
-    public static void main(String[] args) {
-        WhackAMole game = new WhackAMole();
-        Timer clock = new Timer(SLEEP_TIME, game);
-        clock.start();
     }
 
     @Override
@@ -110,5 +114,10 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
             }
             this.window.repaint();
         }
+    }
+
+    public static void main(String[] args) {
+        WhackAMole game = new WhackAMole();
+        game.start(game);
     }
 }
