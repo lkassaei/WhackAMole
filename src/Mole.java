@@ -1,46 +1,45 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.awt.image.ImageObserver;
 
 public class Mole {
     private WhackAMoleViewer window;
-    private int windowWidth;
-    private int windowHeight;
-
     private Image moleImage;
     private int imageWidth;
     private int imageHeight;
-
     private final int adjust = 20;
-
     private int x;
     private int y;
-
     private ArrayList<Hole> holes;
     private Hole currentHole;
-
-    private int moveDelaySeconds;
-    private int secondsBeforeMove;
     private static final int TICKS_PER_SECOND = 10;
-
-    private boolean isVisible; // To control whether the mole is drawn
-    private boolean waitingToMove; // Flag to start the delay
+    private boolean isVisible;
+    private boolean waitingToMove; // After being whacked
     private int moveDelayTicks;
+    private int moveDelaySeconds; // Delay after being whacked (random)
+    private int secondsBeforeMove; // How long to stay visible (random)
     private int ticksBeforeMove;
+    private boolean movingRandomly; // Flag for independent movement delay
+    private int randomMoveDelaySeconds;
+    private int randomMoveDelayTicks;
 
     public Mole(WhackAMoleViewer window, ArrayList<Hole> holes) {
         this.window = window;
-        this.windowWidth = window.getWidth();
-        this.windowHeight = window.getHeight();
         this.holes = holes;
         this.moleImage = new ImageIcon("Resources/moleTransparent.png").getImage();
-        imageWidth = moleImage.getWidth(window);
-        imageHeight = moleImage.getHeight(window);
+        this.imageWidth = moleImage.getWidth(window);
+        this.imageHeight = moleImage.getHeight(window);
         this.currentHole = null;
         this.isVisible = false;
         this.waitingToMove = false;
-        this.move();
+        this.moveDelayTicks = 0;
+        this.moveDelaySeconds = 0;
+        this.secondsBeforeMove = 0;
+        this.ticksBeforeMove = 0;
+        this.movingRandomly = false;
+        this.randomMoveDelaySeconds = 0;
+        this.randomMoveDelayTicks = 0;
+        startRandomMovement();
     }
 
     public int getX() {
@@ -67,10 +66,6 @@ public class Mole {
         return currentHole;
     }
 
-    public void setCurrentHole(Hole currentHole) {
-        this.currentHole = currentHole;
-    }
-
     public boolean isVisible() {
         return isVisible;
     }
@@ -83,35 +78,61 @@ public class Mole {
             this.y = currentHole.getY();
             currentHole.setIsOccupied(true);
             window.repaint();
+            findSecondsBeforeMove(); // Set how long to stay visible
+            ticksBeforeMove = 0;
         }
     }
 
     public void whack() {
         if (isVisible) {
             isVisible = false;
-            waitingToMove = true; // Start the delay to move
+            waitingToMove = true;
+            moveDelayTicks = 0;
+            findMoveDelaySeconds(); // Set the random delay before moving after whack
+            if (currentHole != null) {
+                currentHole.setIsOccupied(false);
+                currentHole = null;
+            }
+            window.repaint();
         }
     }
 
     public void findMoveDelaySeconds() {
-        moveDelaySeconds = (int)(Math.random() * 8);
+        moveDelaySeconds = (int) (Math.random() * 3); // Random delay 1-3 seconds
     }
 
     public void findSecondsBeforeMove() {
-        secondsBeforeMove = (int)(Math.random() * 3);
+        secondsBeforeMove = (int) (Math.random() * 3); // Random visibility 1-3 seconds
+    }
+
+    public void findRandomMoveDelaySeconds() {
+        randomMoveDelaySeconds = (int) (Math.random() * 3); // Random delay for independent move 2-6 seconds
+    }
+
+    public void startRandomMovement() {
+        findRandomMoveDelaySeconds();
+        movingRandomly = true;
     }
 
     public void update() {
-        findMoveDelaySeconds();
-        findSecondsBeforeMove();
         if (waitingToMove) {
             moveDelayTicks++;
-            ticksBeforeMove++;
             if (moveDelayTicks >= moveDelaySeconds * TICKS_PER_SECOND) {
                 waitingToMove = false;
-                moveDelayTicks = 0;
-                ticksBeforeMove = 0;
-                disappear(); // Ensure it's not visible before moving
+                move();
+            }
+        } else if (isVisible) {
+            ticksBeforeMove++;
+            if (ticksBeforeMove >= secondsBeforeMove * TICKS_PER_SECOND) {
+                disappear();
+                movingRandomly = true;
+                findRandomMoveDelaySeconds();
+                randomMoveDelayTicks = 0;
+            }
+        } else if (movingRandomly) {
+            randomMoveDelayTicks++;
+            if (randomMoveDelayTicks >= randomMoveDelaySeconds * TICKS_PER_SECOND) {
+                movingRandomly = false;
                 move();
             }
         }
@@ -119,6 +140,11 @@ public class Mole {
 
     public void disappear() {
         this.isVisible = false;
+        if (currentHole != null) {
+            currentHole.setIsOccupied(false);
+            currentHole = null;
+        }
+        window.repaint();
     }
 
     public void draw(Graphics g) {

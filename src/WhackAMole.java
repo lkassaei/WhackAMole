@@ -40,6 +40,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
         // Create the hammer and mole
         this.hammer = new Hammer(window);
         mole = new Mole(window, holes);
+        mole.startRandomMovement();
 
         // Allows MouseMotionListener to receive events from this class
         this.window.addMouseMotionListener(this);
