@@ -1,42 +1,56 @@
+// WhackAMole by Lily Kassaei
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-public class WhackAMole implements ActionListener, MouseMotionListener {
+public class WhackAMole implements ActionListener, MouseMotionListener, MouseListener{
+    // Game State Constants
+    public static final int INSTRUCTION_STATE = 0;
+    public static final int MAIN_STATE = 1;
+    public static final int GAME_OVER_STATE = 2;
+
     private Mole mole;
+    private final int moleCount = 3;
     private Hammer hammer;
     private ArrayList<Hole> holes;
     private WhackAMoleViewer window;
 
     private int points;
-    private int counter;
-
+    private int timeRemainingTicks;
     private int state;
-    public static final int INSTRUCTION_STATE = 0;
-    public static final int MAIN_STATE = 1;
-    public static final int GAME_OVER_STATE = 2;
-
-    private static final int SLEEP_TIME = 110;
+    private static final int GAME_DURATION_SECONDS =40;
+    private static final int TICKS_PER_SECOND = 10; // Game updates 10 times per second
+    public static final int INSTRUCTION_START_SECOND = 35;
+    private static final int SLEEP_TIME = 100;
 
     public WhackAMole() {
+        // Create window
         window = new WhackAMoleViewer(this);
 
+        // Set state to show instructions
         this.state = INSTRUCTION_STATE;
 
+        // Create and populate holes
         this.holes = new ArrayList<Hole>();
         fillHoles();
+
+        // Create the hammer and mole
         this.hammer = new Hammer(window);
-        this.mole = new Mole(window, holes);
+        mole = new Mole(window, holes);
 
+        // Allows MouseMotionListener to receive events from this class
         this.window.addMouseMotionListener(this);
+        this.window.addMouseListener(this);
 
-        counter = 200;
+        // 20 seconds
+        timeRemainingTicks = GAME_DURATION_SECONDS * TICKS_PER_SECOND;
     }
 
-    public void start(WhackAMole game) {
-        Timer clock = new Timer(SLEEP_TIME, game);
+    public void start() {
+        Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
     }
 
@@ -56,8 +70,8 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
         return state;
     }
 
-    public int getCounter() {
-        return counter;
+    public int getTimeRemainingSeconds() {
+        return timeRemainingTicks / TICKS_PER_SECOND;
     }
 
     public int getPoints() {
@@ -85,14 +99,15 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        counter--;
-        if (counter > 150) {
+        timeRemainingTicks--;
+        if (getTimeRemainingSeconds() > INSTRUCTION_START_SECOND) {
             this.state = INSTRUCTION_STATE;
         }
-        else if (counter > 0) {
+        else if (getTimeRemainingSeconds() > 0) {
             this.state = MAIN_STATE;
+            mole.update();
         }
-        else if (counter == 0){
+        else if (getTimeRemainingSeconds() == 0){
             state = GAME_OVER_STATE;
         }
         window.repaint();
@@ -105,19 +120,42 @@ public class WhackAMole implements ActionListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (this.state != GAME_OVER_STATE) {
-            hammer.setX(e.getX());
-            hammer.setY(e.getY());
-            if (hammer.hasCollided(mole)) {
-                mole.move();
-                points++;
-            }
+        if (this.state == MAIN_STATE) {
+            hammer.setPosition(e.getX(), e.getY());
             this.window.repaint();
         }
     }
 
     public static void main(String[] args) {
         WhackAMole game = new WhackAMole();
-        game.start(game);
+        game.start();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (state == MAIN_STATE && hammer.hasCollided(mole)) {
+            points++;
+            mole.whack();
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

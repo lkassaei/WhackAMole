@@ -7,27 +7,32 @@ public class Hammer {
     private Image leftHammerImage;
     private Image rightHammerImage;
     private int imageWidth;
-    private final int imageHeight;
-    private WhackAMoleViewer window;
+    private int imageHeight;
+    private final WhackAMoleViewer window;
 
     private final int mouseAdjust = 100;
 
     public Hammer(WhackAMoleViewer window) {
         this.window = window;
+        setInitialPosition();
+        setImages();
+    }
+
+    public void setInitialPosition() {
         this.x = 0;
         this.y = 0;
+    }
+
+    public void setImages() {
         this.leftHammerImage = new ImageIcon("Resources/hammer.png").getImage();
         this.rightHammerImage = new ImageIcon("Resources/hammerRightFacing.png").getImage();
         imageWidth = leftHammerImage.getWidth(window);
         imageHeight = leftHammerImage.getHeight(window);
     }
 
-    public void setX(int newX) {
-        x = newX;
-    }
-
-    public void setY(int newY) {
-        y = newY;
+    public void setPosition(int newX, int newY) {
+        this.x = newX;
+        this.y = newY;
     }
 
     public boolean hasCollided(Mole mole) {
@@ -44,18 +49,15 @@ public class Hammer {
         boolean xOverlap = hammerLeftX < moleRightX && hammerRightX > mole.getX();
         boolean yOverlap = hammerTopY < moleBottomY && hammerBottomY > mole.getY();
 
-        if (xOverlap && yOverlap) {
-            return true;
-        }
-        return false;
+        return xOverlap && yOverlap;
     }
 
     public void draw(Graphics g) {
         if (x > window.getWidth() / 2) {
-            g.drawImage(rightHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, null);
+            g.drawImage(rightHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, window);
         }
         else {
-            g.drawImage(leftHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, null);;
+            g.drawImage(leftHammerImage, x - mouseAdjust, y - mouseAdjust, imageWidth, imageHeight, window);;
         }
     }
 }

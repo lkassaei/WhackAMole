@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Hole {
+public class Hole{
     private WhackAMoleViewer window;
     private int windowWidth;
     private int windowHeight;
@@ -10,6 +10,7 @@ public class Hole {
     private Image holeImage;
     private final int imageWidth = 250;
     private final int imageHeight = 150;
+    private boolean isOccupied;
 
     public Hole(WhackAMoleViewer window, int x, int y) {
         this.window = window;
@@ -18,6 +19,7 @@ public class Hole {
         this.x = x;
         this.y = y;
         this.holeImage = new ImageIcon("Resources/moleInHole.png").getImage();
+        isOccupied = false;
     }
 
     public int getX() {
@@ -26,6 +28,14 @@ public class Hole {
 
     public int getY() {
         return y;
+    }
+
+    public boolean getIsOccupied() {
+        return isOccupied;
+    }
+
+    public void setIsOccupied(boolean b) {
+         isOccupied = b;
     }
 
     public void draw(Graphics g) {
