@@ -89,7 +89,7 @@ public class WhackAMoleViewer extends JFrame {
 
         if (drawTimer && hasStarted) {
             g.setColor(PANEL_COLOR);
-            g.fillRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2); // Information panel background
+            g.fillRoundRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2, 20, 20); // Information panel background
             g.setColor(TEXT_COLOR);
             g.drawString("Timer: " + game.getTimeRemainingSeconds(), PANEL_X + PANEL_MARGIN, yOffset);
             g.drawString("Points: " + game.getPoints(), PANEL_X + PANEL_MARGIN, yOffset + (2 * PANEL_MARGIN));
@@ -100,7 +100,7 @@ public class WhackAMoleViewer extends JFrame {
         }
         else {
             g.setColor(PANEL_COLOR);
-            g.fillRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2); // Information panel background
+            g.fillRoundRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2, 20, 20); // Information panel background
             g.setColor(TEXT_COLOR);
             g.drawString("Points: " + game.getPoints(), PANEL_X + PANEL_MARGIN, yOffset + PANEL_MARGIN);
         }
@@ -108,11 +108,11 @@ public class WhackAMoleViewer extends JFrame {
 
     public void drawInstructions(Graphics g) {
         g.setColor(PANEL_COLOR);
-        g.fillRect(150, PANEL_Y * 3, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 200);
+        g.fillRoundRect(150, PANEL_Y * 3, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 200, 20, 20);
         g.setColor(TEXT_COLOR);
         g.setFont(FONT);
         g.drawString("How to Play:", (PANEL_X * 5) + PANEL_MARGIN, 350);
-        g.fillRect(PANEL_X * 4, 250, WINDOW_WIDTH - 300, 10);
+        g.fillRect(150, 250, WINDOW_WIDTH - 300, 10);
         g.setFont(FONT);
         String line1 = "Whack (click) moles!";
         String line2 = "Whack = points.";
@@ -129,7 +129,6 @@ public class WhackAMoleViewer extends JFrame {
         g.drawImage(this.loadingGame, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
         drawInstructions(g);
         drawPanel(g, true, false);
-
     }
 
     public void drawObjects(Graphics g) {

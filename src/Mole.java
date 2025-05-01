@@ -98,15 +98,15 @@ public class Mole {
     }
 
     public void findMoveDelaySeconds() {
-        moveDelaySeconds = (int) (Math.random() * 3); // Random delay 1-3 seconds
+        moveDelaySeconds = (int) ((Math.random() * 3) + 1); // Random delay 1-3 seconds
     }
 
     public void findSecondsBeforeMove() {
-        secondsBeforeMove = (int) (Math.random() * 3); // Random visibility 1-3 seconds
+        secondsBeforeMove = (int) ((Math.random() * 3)); // Random visibility 1-3 seconds
     }
 
     public void findRandomMoveDelaySeconds() {
-        randomMoveDelaySeconds = (int) (Math.random() * 3); // Random delay for independent move 2-6 seconds
+        randomMoveDelaySeconds = (int) ((Math.random() * 3) + 1); // Random delay for independent move 2-6 seconds
     }
 
     public void startRandomMovement() {

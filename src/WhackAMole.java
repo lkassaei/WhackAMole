@@ -142,6 +142,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
         if (state == MAIN_STATE && hammer.hasCollided(mole)) {
             points++;
             mole.whack();
+            window.repaint();
         }
     }
 
