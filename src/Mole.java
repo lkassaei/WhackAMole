@@ -1,8 +1,11 @@
+/**
+ * Represents a Mole in the Whack-A-Mole game that a user can whack
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-// Represents a Mole in the Whack-A-Mole game that a user can whack
 public class Mole {
     // Mole graphic
     private WhackAMoleViewer window;

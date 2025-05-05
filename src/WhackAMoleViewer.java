@@ -1,3 +1,7 @@
+/**
+ * Frontend
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -132,6 +136,7 @@ public class WhackAMoleViewer extends JFrame {
         String[] lines = {
                 "Whack (click) moles!",
                 "Whack = points.",
+                "Moles move fast!",
                 "You have 25 secs"
         };
 

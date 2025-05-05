@@ -1,7 +1,10 @@
+/**
+ * Represents a hole in the Whack-A-Mole game where the mole can appear
+ */
+
 import javax.swing.*;
 import java.awt.*;
 
-// Represents a hole in the Whack-A-Mole game where the mole can appear
 public class Hole{
     // Frontend
     private WhackAMoleViewer window;

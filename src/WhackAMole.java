@@ -1,4 +1,6 @@
-// WhackAMole by Lily Kassaei
+/**
+ * WhackAMole by Lily Kassaei
+  */
 
 import javax.swing.*;
 import java.awt.event.*;
