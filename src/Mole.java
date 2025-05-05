@@ -2,33 +2,48 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+// Represents a Mole in the Whack-A-Mole game that a user can whack
 public class Mole {
+    // Mole graphic
     private WhackAMoleViewer window;
     private Image moleImage;
     private int imageWidth;
     private int imageHeight;
+
+    // Mole position
     private final int adjust = 20;
     private int x;
     private int y;
+
+    // Holes and current position
     private ArrayList<Hole> holes;
     private Hole currentHole;
-    private static final int TICKS_PER_SECOND = 10;
+
+    // Mole states
     private boolean isVisible;
-    private boolean waitingToMove; // After being whacked
+    private boolean waitingToMove;
+    private boolean movingRandomly;
+
+    // Timers and ticks
+    private static final int TICKS_PER_SECOND = 10;
     private int moveDelayTicks;
     private int moveDelaySeconds; // Delay after being whacked (random)
     private int secondsBeforeMove; // How long to stay visible (random)
     private int ticksBeforeMove;
-    private boolean movingRandomly; // Flag for independent movement delay
-    private int randomMoveDelaySeconds;
-    private int randomMoveDelayTicks;
 
+    // Constructor
     public Mole(WhackAMoleViewer window, ArrayList<Hole> holes) {
         this.window = window;
         this.holes = holes;
         this.moleImage = new ImageIcon("Resources/moleTransparent.png").getImage();
         this.imageWidth = moleImage.getWidth(window);
         this.imageHeight = moleImage.getHeight(window);
+        setInitialValues();
+        move();
+    }
+
+    // Initially set values
+    public void setInitialValues() {
         this.currentHole = null;
         this.isVisible = false;
         this.waitingToMove = false;
@@ -37,111 +52,115 @@ public class Mole {
         this.secondsBeforeMove = 0;
         this.ticksBeforeMove = 0;
         this.movingRandomly = false;
-        this.randomMoveDelaySeconds = 0;
-        this.randomMoveDelayTicks = 0;
-        startRandomMovement();
     }
 
+    // Getter methods
     public int getX() {
-        return x;
+        return x; // Returns x coordinate of the Mole
     }
 
     public int getY() {
-        return y;
+        return y;  // Returns y coordinate of the Mole
     }
 
     public int getImageWidth() {
-        return imageWidth;
+        return imageWidth;  // Returns image width of the Mole
     }
 
     public int getImageHeight() {
-        return imageHeight;
+        return imageHeight; // Returns image height of the Mole
     }
 
     public int getAdjust() {
-        return adjust;
-    }
-
-    public Hole getCurrentHole() {
-        return currentHole;
+        return adjust; // Returns adjustment needed to center the Mole image in the hole
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return isVisible; // Returns visibility status of the Mole
     }
 
+    // After the mole has been whacked
     public void move() {
         if (!holes.isEmpty()) {
+            // Become visible
             this.isVisible = true;
+            // Move to next hole
             currentHole = holes.get((int) (Math.random() * holes.size()));
             this.x = currentHole.getX();
             this.y = currentHole.getY();
-            currentHole.setIsOccupied(true);
+            // Update window
             window.repaint();
             findSecondsBeforeMove(); // Set how long to stay visible
-            ticksBeforeMove = 0;
+            ticksBeforeMove = 0; // Reset
         }
     }
 
+    // Right after being whacked by the user
     public void whack() {
         if (isVisible) {
+            // Become invisible and wait to move
             isVisible = false;
             waitingToMove = true;
             moveDelayTicks = 0;
             findMoveDelaySeconds(); // Set the random delay before moving after whack
+            // Set position to null
             if (currentHole != null) {
-                currentHole.setIsOccupied(false);
                 currentHole = null;
             }
+            // Update
             window.repaint();
         }
     }
 
+    // Sets random delay before the mole can move again after being whacked
     public void findMoveDelaySeconds() {
         moveDelaySeconds = (int) ((Math.random() * 3) + 1); // Random delay 1-3 seconds
     }
 
+    // Sets random duration for how long the mole will remain visible. Once this runs out, the mole will move independently
     public void findSecondsBeforeMove() {
         secondsBeforeMove = (int) ((Math.random() * 3)); // Random visibility 1-3 seconds
     }
 
-    public void findRandomMoveDelaySeconds() {
-        randomMoveDelaySeconds = (int) ((Math.random() * 3) + 1); // Random delay for independent move 2-6 seconds
-    }
-
-    public void startRandomMovement() {
-        findRandomMoveDelaySeconds();
-        movingRandomly = true;
-    }
-
+    // Updates the mole based on its state and timers
     public void update() {
         if (waitingToMove) {
-            moveDelayTicks++;
-            if (moveDelayTicks >= moveDelaySeconds * TICKS_PER_SECOND) {
-                waitingToMove = false;
-                move();
-            }
+            handleWhackedDelay();
         } else if (isVisible) {
-            ticksBeforeMove++;
-            if (ticksBeforeMove >= secondsBeforeMove * TICKS_PER_SECOND) {
-                disappear();
-                movingRandomly = true;
-                findRandomMoveDelaySeconds();
-                randomMoveDelayTicks = 0;
-            }
-        } else if (movingRandomly) {
-            randomMoveDelayTicks++;
-            if (randomMoveDelayTicks >= randomMoveDelaySeconds * TICKS_PER_SECOND) {
-                movingRandomly = false;
-                move();
-            }
+            handleVisibilityTimer();
+        } else { // Not waiting to move and not visible
+            move(); // Move immediately
         }
     }
 
+    // Handles the delay period after the mole has been whacked
+    public void handleWhackedDelay(){
+        // Increase timer for mole's move delay
+        moveDelayTicks++;
+        // If the timer is up
+        if (moveDelayTicks >= moveDelaySeconds * TICKS_PER_SECOND) {
+            // Move and update moving state
+            waitingToMove = false;
+            move();
+        }
+    }
+
+    // Handles the timer for how long the mole stays visible
+    public void handleVisibilityTimer() {
+        // Increase timer for visibility
+        ticksBeforeMove++;
+        // If timer is up
+        if (ticksBeforeMove >= secondsBeforeMove * TICKS_PER_SECOND) {
+            // disappear, move, and start timer for next time
+            disappear();
+            movingRandomly = true;
+        }
+    }
+
+    // Make the mole "pop down into a hole" / become invisible
     public void disappear() {
         this.isVisible = false;
         if (currentHole != null) {
-            currentHole.setIsOccupied(false);
             currentHole = null;
         }
         window.repaint();

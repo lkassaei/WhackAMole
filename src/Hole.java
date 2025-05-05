@@ -1,45 +1,39 @@
 import javax.swing.*;
 import java.awt.*;
 
+// Represents a hole in the Whack-A-Mole game where the mole can appear
 public class Hole{
+    // Frontend
     private WhackAMoleViewer window;
-    private int windowWidth;
-    private int windowHeight;
+
+    // Hole location
     private int x;
     private int y;
+
+    // Hole image attributes
     private Image holeImage;
     private final int imageWidth = 250;
     private final int imageHeight = 150;
-    private boolean isOccupied;
 
+    // Constructor
     public Hole(WhackAMoleViewer window, int x, int y) {
         this.window = window;
-        this.windowWidth = window.getWidth();
-        this.windowHeight = window.getHeight();
         this.x = x;
         this.y = y;
         this.holeImage = new ImageIcon("Resources/moleInHole.png").getImage();
-        isOccupied = false;
     }
 
+    // Getter methods
     public int getX() {
-        return x;
+        return x; // Returns x coordinate of the hole
     }
 
     public int getY() {
-        return y;
+        return y; // Returns y coordinate of the hole
     }
 
-    public boolean getIsOccupied() {
-        return isOccupied;
-    }
-
-    public void setIsOccupied(boolean b) {
-         isOccupied = b;
-    }
-
+    // Draws the hole on the frontend
     public void draw(Graphics g) {
         g.drawImage(holeImage, x, y, imageWidth, imageHeight, window);
     }
-
 }

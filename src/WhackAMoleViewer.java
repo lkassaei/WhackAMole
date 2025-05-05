@@ -3,14 +3,14 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 public class WhackAMoleViewer extends JFrame {
+    // Backend data
     private WhackAMole game;
+
+    // Window properties
     private final int WINDOW_WIDTH = 1000;
     private final int WINDOW_HEIGHT = 800;
 
-    private Image loadingGame;
-    private Image background;
-    private Image gameOver;
-
+    // UI styling constants
     private final int PANEL_MARGIN = 20;
     private final int PANEL_X = 40;
     private final int PANEL_Y = 50;
@@ -18,27 +18,32 @@ public class WhackAMoleViewer extends JFrame {
     private final Color PANEL_COLOR = new Color(255, 165, 0, 180); // Orange with transparency
     private final Color TEXT_COLOR = Color.WHITE;
 
+    // Game state images
+    private Image loadingGame;
+    private Image background;
+    private Image gameOver;
 
+    // Set everything to initial values
     public WhackAMoleViewer(WhackAMole game) {
         this.game = game;
-        setImages();
+        loadImages();
         setupWindow();
     }
 
-    public void setImages() {
+    // Load images used in all the game states
+    public void loadImages() {
         this.loadingGame = new ImageIcon("Resources/back.png").getImage();
         this.background = new ImageIcon("Resources/back.png").getImage();
         this.gameOver = new ImageIcon("Resources/over.png").getImage();
     }
 
+    // Set up all window properties
     public void setupWindow() {
-        // Make sure window exits when you close it, has the title "Card Game", has a set size, and can be seen
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle("Whack-A-Mole");
-        this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        // Calls paint method
-        this.setVisible(true);
-        createBufferStrategy(2);
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // Exit when window is closed
+        setTitle("Whack-A-Mole");                // Set window title
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);    // Set fixed window size
+        setVisible(true);                        // Make window visible
+        createBufferStrategy(2);      // Enable double buffering for smoother graphics
     }
 
     public void paint(Graphics g) {
@@ -48,7 +53,7 @@ public class WhackAMoleViewer extends JFrame {
         Graphics g2 = null;
         try {
             g2 = bf.getDrawGraphics();
-            myPaint(g2);
+            renderGame(g2);
         }
         finally {
             g2.dispose();
@@ -57,7 +62,8 @@ public class WhackAMoleViewer extends JFrame {
         Toolkit.getDefaultToolkit().sync();
     }
 
-    public void myPaint(Graphics g) {
+    // Choose the correct screen to display based on the game state
+    public void renderGame(Graphics g) {
         // Find what state the game is in
         int state = game.getState();
         // Based on the state, draw the right things
@@ -66,87 +72,116 @@ public class WhackAMoleViewer extends JFrame {
 
     public void paintCorrectState(int state, Graphics g) {
         switch (state) {
+            // If the game is in instruction state, draw the instructions
             case WhackAMole.INSTRUCTION_STATE:
-                paintInstructions(g);
+                drawInstructions(g);
                 break;
+            // If the game is in the main state, draw the main game
             case WhackAMole.MAIN_STATE:
-                paintMain(g);
+                drawMainGame(g);
                 break;
+            // If the game is in the game over state, draw the end screen
             case WhackAMole.GAME_OVER_STATE:
-                paintGameOver(g);
+                drawGameOver(g);
                 break;
+            // Default case is to break
             default:
                 break;
         }
     }
 
-    public void drawPanel(Graphics g, Boolean drawTimer, Boolean hasStarted) {
-        // Draw information panel
-         // Orange with transparency
+    // Draw instruction screen
+    public void drawInstructions(Graphics g) {
+        g.drawImage(loadingGame, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+        drawInstructionText(g);
+        drawInfoPanel(g, true, false);
+    }
 
+    // Draw main screen
+    private void drawMainGame(Graphics g) {
+        g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+        drawGameObjects(g);
+        drawInfoPanel(g, true, true);
+    }
+
+    // Draw game over screen
+    private void drawGameOver(Graphics g) {
+        g.drawImage(gameOver, 0, -150, WINDOW_WIDTH, WINDOW_HEIGHT + 300, this);
+        drawInfoPanel(g, false, true);
+    }
+
+    private void drawInstructionText(Graphics g) {
+        // Create local variables for the instruction text panel
+        int instructionPanelMargin = 150;
+        int instructionArcSize = 20;
+        int instructionHeightMargin = 200;
+
+        g.setColor(PANEL_COLOR); // Transparent orange
+        // Draw the panel
+        g.fillRoundRect(instructionPanelMargin, PANEL_Y * 3, WINDOW_WIDTH - (2 * instructionPanelMargin),
+                WINDOW_HEIGHT - instructionHeightMargin, instructionArcSize, instructionArcSize);
+
+        g.setColor(TEXT_COLOR); // White
         g.setFont(FONT);
-        int yOffset = PANEL_Y + (2 * PANEL_MARGIN);
+        g.drawString("How to Play:", PANEL_X * 5 + PANEL_MARGIN, PANEL_Y * 7);
 
-        if (drawTimer && hasStarted) {
-            g.setColor(PANEL_COLOR);
-            g.fillRoundRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2, 20, 20); // Information panel background
+        // Divider line
+        g.fillRect(instructionPanelMargin, PANEL_Y * 5, WINDOW_WIDTH - (2 * instructionPanelMargin), 10);
+
+        // Create text lines
+        String[] lines = {
+                "Whack (click) moles!",
+                "Whack = points.",
+                "You have 25 secs"
+        };
+
+        // Create variables for text spacing
+        int lineSpacing = 80;
+        int startY = instructionHeightMargin * 2 + PANEL_Y;
+        int startX = PANEL_X * 5 + PANEL_MARGIN;
+        // Draw lines with correct spacing
+        for (int i = 0; i < lines.length; i++) {
+            g.drawString(lines[i], startX, startY + (i * lineSpacing));
+        }
+    }
+
+    // Draw the top left info panel with the timer and points
+    private void drawInfoPanel(Graphics g, boolean showTimer, boolean gameStarted) {
+        g.setFont(FONT); // Set font
+        int yOffset = PANEL_Y + (2 * PANEL_MARGIN); // Position below the top
+
+        if (showTimer && gameStarted) {
+            // Draw timer and points during active gameplay
+            drawPanelBackground(g);
             g.setColor(TEXT_COLOR);
             g.drawString("Timer: " + game.getTimeRemainingSeconds(), PANEL_X + PANEL_MARGIN, yOffset);
             g.drawString("Points: " + game.getPoints(), PANEL_X + PANEL_MARGIN, yOffset + (2 * PANEL_MARGIN));
-        }
-        else if (drawTimer) {
+        } else if (showTimer) {
+            // Show countdown timer before game starts
             g.setColor(TEXT_COLOR);
-            g.drawString("Start In: " + (game.getTimeRemainingSeconds() - WhackAMole.INSTRUCTION_START_SECOND), (PANEL_X * 5) + PANEL_MARGIN, yOffset + PANEL_Y * 3);
-        }
-        else {
-            g.setColor(PANEL_COLOR);
-            g.fillRoundRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2, 20, 20); // Information panel background
+            int countdown = game.getTimeRemainingSeconds() - WhackAMole.INSTRUCTION_END_SECOND;
+            g.drawString("Start In: " + countdown, PANEL_X * 5 + PANEL_MARGIN, yOffset + PANEL_Y * 3);
+        } else {
+            // Game over state: show final points only
+            drawPanelBackground(g);
             g.setColor(TEXT_COLOR);
             g.drawString("Points: " + game.getPoints(), PANEL_X + PANEL_MARGIN, yOffset + PANEL_MARGIN);
         }
     }
 
-    public void drawInstructions(Graphics g) {
+    // Draw the actual panel behind the timer and points
+    private void drawPanelBackground(Graphics g) {
         g.setColor(PANEL_COLOR);
-        g.fillRoundRect(150, PANEL_Y * 3, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 200, 20, 20);
-        g.setColor(TEXT_COLOR);
-        g.setFont(FONT);
-        g.drawString("How to Play:", (PANEL_X * 5) + PANEL_MARGIN, 350);
-        g.fillRect(150, 250, WINDOW_WIDTH - 300, 10);
-        g.setFont(FONT);
-        String line1 = "Whack (click) moles!";
-        String line2 = "Whack = points.";
-        String line3 = "You have 15 secs";
-        int lineSpacing = 80;
-        int startY = 450;
-        int startX = PANEL_X * 5 + PANEL_MARGIN;
-        g.drawString(line1, startX, startY);
-        g.drawString(line2, startX, startY + lineSpacing);
-        g.drawString(line3, startX, startY + 2 * lineSpacing);
+        g.fillRoundRect(PANEL_X, PANEL_Y, PANEL_X * 6, PANEL_Y * 2, 20, 20);
     }
 
-    public void paintInstructions(Graphics g) {
-        g.drawImage(this.loadingGame, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
-        drawInstructions(g);
-        drawPanel(g, true, false);
-    }
-
-    public void drawObjects(Graphics g) {
+    private void drawGameObjects(Graphics g) {
+        // Draw each hole
         for (Hole h : game.getHoles()) {
             h.draw(g);
         }
+        // Draw the mole and the hammer
         game.getMole().draw(g);
         game.getHammer().draw(g);
-    }
-
-    public void paintMain(Graphics g) {
-        g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
-        drawObjects(g);
-        drawPanel(g, true, true);
-    }
-
-    public void paintGameOver(Graphics g) {
-        g.drawImage(this.gameOver, 0, -150, WINDOW_WIDTH, WINDOW_HEIGHT + 300, this);
-        drawPanel(g, false, true);
     }
 }
