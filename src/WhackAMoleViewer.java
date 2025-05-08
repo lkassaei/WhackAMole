@@ -8,7 +8,7 @@ import java.awt.image.BufferStrategy;
 
 public class WhackAMoleViewer extends JFrame {
     // Backend data
-    private WhackAMole game;
+    private final WhackAMole game;
 
     // Window properties
     private final int WINDOW_WIDTH = 1000;

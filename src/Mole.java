@@ -25,7 +25,6 @@ public class Mole {
     // Mole states
     private boolean isVisible;
     private boolean waitingToMove;
-    private boolean movingRandomly;
 
     // Timers and ticks
     private static final int TICKS_PER_SECOND = 10;
@@ -54,7 +53,6 @@ public class Mole {
         this.moveDelaySeconds = 0;
         this.secondsBeforeMove = 0;
         this.ticksBeforeMove = 0;
-        this.movingRandomly = false;
     }
 
     // Getter methods
@@ -156,7 +154,6 @@ public class Mole {
         if (ticksBeforeMove >= secondsBeforeMove * TICKS_PER_SECOND) {
             // disappear, move, and start timer for next time
             disappear();
-            movingRandomly = true;
         }
     }
 

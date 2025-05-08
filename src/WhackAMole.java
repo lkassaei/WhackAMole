@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-public class WhackAMole implements ActionListener, MouseMotionListener, MouseListener{
+public class WhackAMole implements ActionListener, MouseMotionListener, MouseListener {
 
     // Game State Constants
     private int state;
@@ -17,7 +17,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     public static final int GAME_OVER_STATE = 2;
 
     // Game Parameters
-    private static final int GAME_DURATION_SECONDS = 30; // How long the game lasts (including instructions)
+    private static final int GAME_DURATION_SECONDS = 35; // How long the game lasts (including instructions)
     private static final int TICKS_PER_SECOND = 10; // Game updates 10 times per second
     public static final int INSTRUCTION_END_SECOND = 25; // When the instructions end
     private static final int SLEEP_TIME = 100; // Events happen every 100 ms or 1 sec
