@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class Mole {
     // Mole graphic
-    private WhackAMoleViewer window;
-    private Image moleImage;
-    private int imageWidth;
-    private int imageHeight;
+    private final WhackAMoleViewer window;
+    private final Image moleImage;
+    private final int imageWidth;
+    private final int imageHeight;
 
     // Mole position
     private final int adjust = 20;
@@ -19,7 +19,7 @@ public class Mole {
     private int y;
 
     // Holes and current position
-    private ArrayList<Hole> holes;
+    private final ArrayList<Hole> holes;
     private Hole currentHole;
 
     // Mole states
@@ -166,6 +166,7 @@ public class Mole {
         window.repaint();
     }
 
+    // Draw mole if it should be visible accounting for adjusting it in the center of the hole
     public void draw(Graphics g) {
         if (isVisible) {
             g.drawImage(moleImage, x - adjust, y - adjust, imageWidth, imageHeight, window);

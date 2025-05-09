@@ -50,6 +50,7 @@ public class WhackAMoleViewer extends JFrame {
         createBufferStrategy(2);      // Enable double buffering for smoother graphics
     }
 
+    // Creates double buffering for smoother graphics
     public void paint(Graphics g) {
         BufferStrategy bf = this.getBufferStrategy();
         if (bf == null)
@@ -78,15 +79,16 @@ public class WhackAMoleViewer extends JFrame {
         switch (state) {
             // If the game is in instruction state, draw the instructions
             case WhackAMole.INSTRUCTION_STATE:
-                drawInstructions(g);
+                drawState(g, loadingGame, true, false, 0);
                 break;
             // If the game is in the main state, draw the main game
             case WhackAMole.MAIN_STATE:
-                drawMainGame(g);
+                drawState(g, background, true, true, 0);
+                drawGameObjects(g);
                 break;
             // If the game is in the game over state, draw the end screen
             case WhackAMole.GAME_OVER_STATE:
-                drawGameOver(g);
+                drawState(g, gameOver, false, true, 150);
                 break;
             // Default case is to break
             default:
@@ -94,24 +96,9 @@ public class WhackAMoleViewer extends JFrame {
         }
     }
 
-    // Draw instruction screen
-    public void drawInstructions(Graphics g) {
-        g.drawImage(loadingGame, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
-        drawInstructionText(g);
-        drawInfoPanel(g, true, false);
-    }
-
-    // Draw main screen
-    private void drawMainGame(Graphics g) {
-        g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
-        drawGameObjects(g);
-        drawInfoPanel(g, true, true);
-    }
-
-    // Draw game over screen
-    private void drawGameOver(Graphics g) {
-        g.drawImage(gameOver, 0, -150, WINDOW_WIDTH, WINDOW_HEIGHT + 300, this);
-        drawInfoPanel(g, false, true);
+    public void drawState(Graphics g, Image image, boolean showTimer, boolean gameStarted, int shift) {
+        g.drawImage(image, 0, shift * -1, WINDOW_WIDTH, WINDOW_HEIGHT  + (2 * shift), this);
+        drawInfoPanel(g, showTimer, gameStarted);
     }
 
     private void drawInstructionText(Graphics g) {
@@ -163,6 +150,7 @@ public class WhackAMoleViewer extends JFrame {
             g.drawString("Points: " + game.getPoints(), PANEL_X + PANEL_MARGIN, yOffset + (2 * PANEL_MARGIN));
         } else if (showTimer) {
             // Show countdown timer before game starts
+            drawInstructionText(g);
             g.setColor(TEXT_COLOR);
             int countdown = game.getTimeRemainingSeconds() - WhackAMole.INSTRUCTION_END_SECOND;
             g.drawString("Start In: " + countdown, PANEL_X * 5 + PANEL_MARGIN, yOffset + PANEL_Y * 3);

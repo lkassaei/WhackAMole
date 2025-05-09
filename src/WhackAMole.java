@@ -23,11 +23,10 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     private static final int SLEEP_TIME = 100; // Events happen every 100 ms or 1 sec
 
     // Game Objects
-
-    private WhackAMoleViewer window;
-    private Mole mole;
-    private Hammer hammer;
-    private ArrayList<Hole> holes;
+    private final WhackAMoleViewer window;
+    private final Mole mole;
+    private final Hammer hammer;
+    private final ArrayList<Hole> holes;
     private int points; // User points
     private int timeRemainingTicks; // Keep track of how many ticks are left
 
@@ -80,7 +79,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     }
 
     public int getTimeRemainingSeconds() {
-        return timeRemainingTicks / TICKS_PER_SECOND; // Returns the seconds remaining the the game
+        return timeRemainingTicks / TICKS_PER_SECOND; // Returns the seconds remaining in the game
     }
 
     public int getPoints() {
@@ -111,6 +110,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     }
 
     @Override
+    // Paint correct state based on the timer
     public void actionPerformed(ActionEvent e) {
         // Decrease the remaining game time
         timeRemainingTicks--;
@@ -133,11 +133,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-
-    }
-
-    @Override
+    // Whenever the mouse moves, draw the hammer on top of the mouse
     public void mouseMoved(MouseEvent e) {
         // Only register movement when the main game is in play
         if (this.state == MAIN_STATE) {
@@ -154,6 +150,12 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
     }
 
     @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    // Every time the mouse is pressed, check if the mole has been whacked and respond accordingly
     public void mousePressed(MouseEvent e) {
         // Only register clicks when the main game is in play and when the user clicks a mole
         if (state == MAIN_STATE && hammer.hasCollided(mole) && mole.isVisible()) {
@@ -181,6 +183,7 @@ public class WhackAMole implements ActionListener, MouseMotionListener, MouseLis
 
     }
 
+    // Create a new game and start it
     public static void main(String[] args) {
         WhackAMole game = new WhackAMole();
         game.start();
