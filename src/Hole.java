@@ -7,14 +7,14 @@ import java.awt.*;
 
 public class Hole{
     // Frontend
-    private WhackAMoleViewer window;
+    private final WhackAMoleViewer window;
 
     // Hole location
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     // Hole image attributes
-    private Image holeImage;
+    private final Image holeImage;
     private final int imageWidth = 250;
     private final int imageHeight = 150;
 
